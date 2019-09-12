@@ -3,6 +3,7 @@
 namespace Uccello\DocumentDesigner\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Uccello\DocumentDesigner\Console\Commands\DocumentGenerate;
 
 /**
  * App Service Provider
@@ -34,6 +35,13 @@ class AppServiceProvider extends ServiceProvider
     $this->publishes([
       __DIR__ . '/../../public' => public_path('vendor/uccello/document-designer'),
     ], 'document-designer-assets');
+
+    // Commands
+    if ($this->app->runningInConsole()) {
+      $this->commands([
+        DocumentGenerate::class,
+      ]);
+    }
 
   }
 

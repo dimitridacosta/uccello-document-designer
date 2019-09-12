@@ -23,4 +23,5 @@ Route::middleware('web', 'auth')
     // Route::get($domainParam.'/home/my_path', 'MyController@action')->defaults('module', 'home')->name('home.my_path');
 
     // Put your routes here
+    Route::get($domainAndModuleParams.'/test', 'DocumentModelController@test');
 });
