@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Storage;
 
 class DocumentIO
 {
-    public static function process($templateFile, $outFile, $data)
+    public static function generate($templateFile, $outFile, $data)
     {
         if(static::endsWith($outFile, '.docx'))
         {
@@ -32,7 +32,7 @@ class DocumentIO
             rename($tempFilePdf, $outFile);
             unlink($tempFileDocx);
         }
-        else 
+        else
         {
             return false;
         }

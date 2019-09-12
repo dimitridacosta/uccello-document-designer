@@ -7,6 +7,10 @@
         {
             "name": "Dimitri DA COSTA",
             "email": "dimitri.dacosta34@gmail.com"
+        },
+        {
+            "name": "Jonathan SARDO",
+            "email": "jonathan@uccellolabs.com"
         }
     ],
     "require": {
@@ -15,12 +19,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Uccello\\DocumentDesigner\\": "app/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Uccello\\DocumentDesigner\\Tests\\": "tests/"
+            "Uccello\\DocumentDesigner\\": "src/"
         }
     },
     "extra": {
