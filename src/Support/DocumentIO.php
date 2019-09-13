@@ -54,6 +54,6 @@ class DocumentIO
         $file = basename($inFile);
         $path = dirname($inFile);
 
-        exec("/usr/bin/soffice --headless -convert-to pdf --outdir \"$path\" $path/$file");
+        exec("/usr/bin/soffice --headless --convert-to pdf --outdir \"$path\" \"$path/$file\"");
     }
 }
