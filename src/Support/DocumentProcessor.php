@@ -22,11 +22,11 @@ class DocumentProcessor extends TemplateProcessor
 
         $data = $this->sortRecursiveData($data);
 
-        foreach ($searchParts as $partFileName => &$partContent)
+        foreach ($searchParts as $partFileName => &$partContent) 
         {
-            foreach ($data as $key => $value)
+            foreach ($data as $key => $value) 
             {
-                $partContent = $this->processRecursiveNode($partContent, $partFileName, $key, $value);
+                $partContent = $this->processRecursiveNode($partContent, $partFileName, $key, $value); 
             }
         }
     }
@@ -36,7 +36,7 @@ class DocumentProcessor extends TemplateProcessor
         if(!empty($xml))
         {
             $type   = substr($key, 0, 2);
-
+    
             if ($type == 's:' || $type == 't:' || $type == 'b:' || $type == 'i:')
             {
                 $key = substr($key, 2);
@@ -48,16 +48,16 @@ class DocumentProcessor extends TemplateProcessor
             }
             else if ($type == 't:') // Table
             {
-                $xml = $this->processRowForScope($xml, $partFileName, $key, $data);
-            }
+                $xml = $this->processRowForScope($xml, $partFileName, $key, $data);    
+            } 
             else if ($type == 'b:') // Block
             {
-                $xml = $this->processBlockForScope($xml, $partFileName, $key, $data);
-            }
+                $xml = $this->processBlockForScope($xml, $partFileName, $key, $data); 
+            } 
             else if ($type == 'i:') // Image
             {
-                $xml = $this->setImageValueForScope($xml, $partFileName, $key, $data);
-            }
+                $xml = $this->setImageValueForScope($xml, $partFileName, $key, $data); 
+            } 
             else // Vars
             {
                 $xml = $this->setValueForScope($xml, $key, $data);
@@ -71,18 +71,18 @@ class DocumentProcessor extends TemplateProcessor
     {
         $xml = $this->cloneRowForScope($xml, $key, count($data));
 
-        foreach ($data as $iLine => $vars)
+        foreach ($data as $iLine => $vars) 
         {
             $i = $iLine + 1;
 
-            foreach ($vars as $search => $replace)
+            foreach ($vars as $search => $replace) 
             {
                 $type   = substr($search, 0, 2);
 
                 if ($type == 'i:') // Image
                 {
                     $search = substr($search, 2);
-
+                    
                     $xml = $this->setImageValueForScope($xml, $partFileName, "$search#$i", $replace);
                 }
                 else // Vars
@@ -104,18 +104,18 @@ class DocumentProcessor extends TemplateProcessor
             $matches
         );
 
-        if (isset($matches[3]))
+        if (isset($matches[3])) 
         {
             $xmlBlock = $matches[3];
-
+            
             $cloned = array();
-
-            foreach ($data as $vars)
+            
+            foreach ($data as $vars) 
             {
                 $xB = $xmlBlock;
                 $vars = $this->sortRecursiveData($vars);
 
-                foreach ($vars as $k => $v)
+                foreach ($vars as $k => $v) 
                 {
                     $xB = $this->processRecursiveNode($xB, $partFileName, $k, $v);
                 }
@@ -140,7 +140,7 @@ class DocumentProcessor extends TemplateProcessor
         $images = [];
         $vars   = [];
 
-        foreach ($data as $key => $value)
+        foreach ($data as $key => $value) 
         {
             $type = substr($key, 0, 2);
 
@@ -212,7 +212,7 @@ class DocumentProcessor extends TemplateProcessor
     protected function cloneRowForScope($xml, $search, $numberOfClones)
     {
         $tagPos = strpos($xml, $search);
-        if (!$tagPos)
+        if (!$tagPos) 
         {
             // throw new Exception('Can not clone row, template variable not found or variable contains markup.');
             $result = $xml;
@@ -222,7 +222,7 @@ class DocumentProcessor extends TemplateProcessor
             $rowStart = $this->findRowStartForScope($xml, $tagPos);
             $rowEnd = $this->findRowEndForScope($xml, $tagPos);
             $xmlRow = $this->getSliceForScope($xml, $rowStart, $rowEnd);
-
+    
             // Check if there's a cell spanning multiple rows.
             if (preg_match('#<w:vMerge w:val="restart"/>#', $xmlRow)) {
                 // $extraRowStart = $rowEnd;
@@ -230,12 +230,12 @@ class DocumentProcessor extends TemplateProcessor
                 while (true) {
                     $extraRowStart = $this->findRowStartForScope($xml, $extraRowEnd + 1);
                     $extraRowEnd = $this->findRowEndForScope($xml, $extraRowEnd + 1);
-
+    
                     // If extraRowEnd is lower then 7, there was no next row found.
                     if ($extraRowEnd < 7) {
                         break;
                     }
-
+    
                     // If tmpXmlRow doesn't contain continue, this row is no longer part of the spanned row.
                     $tmpXmlRow = $this->getSliceForScope($xml, $extraRowStart, $extraRowEnd);
                     if (
@@ -249,7 +249,7 @@ class DocumentProcessor extends TemplateProcessor
                 }
                 $xmlRow = $this->getSliceForScope($xml, $rowStart, $rowEnd);
             }
-
+    
             $result = $this->getSliceForScope($xml, 0, $rowStart);
             $result .= implode($this->indexClonedVariables($numberOfClones, $xmlRow));
             $result .= $this->getSliceForScope($xml, $rowEnd);
@@ -316,7 +316,7 @@ class DocumentProcessor extends TemplateProcessor
     /**
      * Replaces variable names in cloned
      * rows/blocks with indexed names
-     *
+     * 
      * /!\ Overide PHPWord to allow replacing images patern variables   EX: ${img#1:30:30}
      *
      * @param int $count
@@ -380,15 +380,15 @@ class DocumentProcessor extends TemplateProcessor
                     $varInlineArgs = $this->getImageArgs($varNameWithArgs);
                     $preparedImageAttrs = $this->prepareImageAttrs($replaceImage, $varInlineArgs);
                     $imgPath = $preparedImageAttrs['src'];
-
+                    
                     // get image index
                     $imgIndex = $this->getNextRelationsIndex($partFileName);
                     $rid = 'rId' . $imgIndex;
-
+    
                     // replace preparations
                     $this->addImageToRelations($partFileName, $rid, $imgPath, $preparedImageAttrs['mime']);
                     $xmlImage = str_replace(array('{RID}', '{WIDTH}', '{HEIGHT}'), array($rid, $preparedImageAttrs['width'], $preparedImageAttrs['height']), $imgTpl);
-
+    
                     // replace variable
                     $varNameWithArgsFixed = static::ensureMacroCompleted($varNameWithArgs);
                     $matches = array();

@@ -6,15 +6,21 @@ use Illuminate\Support\Facades\Storage;
 
 class DocumentIO
 {
-    public static function generate($templateFile, $outFile, $data)
+    public static function process($templateFile, $outFile, $data)
     {
-        if(static::endsWith($outFile, '.docx'))
+        if(static::endsWith($templateFile, '.xlsx') && static::endsWith($outFile, '.xlsx'))
+        {
+            $calc = new CalcProcessor($templateFile);
+            $calc->process($data);
+            $calc->saveAs($outFile);
+        }
+        else if(static::endsWith($templateFile, '.docx') && static::endsWith($outFile, '.docx'))
         {
             $document = new DocumentProcessor($templateFile);
             $document->processRecursive($data);
             $document->saveAs($outFile);
         }
-        else if(static::endsWith($outFile, '.pdf'))
+        else if(static::endsWith($templateFile, '.docx') && static::endsWith($outFile, '.pdf'))
         {
             Storage::makeDirectory('temp');
 
@@ -32,7 +38,7 @@ class DocumentIO
             rename($tempFilePdf, $outFile);
             unlink($tempFileDocx);
         }
-        else
+        else 
         {
             return false;
         }
