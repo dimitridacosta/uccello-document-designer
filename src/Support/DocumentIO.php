@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Storage;
 
 class DocumentIO
 {
-    public static function process($templateFile, $outFile, $data)
+    public static function process($templateFile, $outFile, $data, $options = null)
     {
         if(static::endsWith($templateFile, '.xlsx') && static::endsWith($outFile, '.xlsx'))
         {
@@ -37,6 +37,12 @@ class DocumentIO
             // Storage::disk('local')->delete($tempFileDocx);
             rename($tempFilePdf, $outFile);
             unlink($tempFileDocx);
+        }
+        else if(static::endsWith($templateFile, '.pdf') && static::endsWith($outFile, '.pdf')) 
+        {
+            $document = new PdfProcessor($templateFile, $options);
+            $document->process($data);
+            $document->saveAs($outFile);
         }
         else 
         {
